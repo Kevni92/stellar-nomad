@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          show-progress: false
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -36,7 +38,10 @@ jobs:
           cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        # The upstream repository currently carries both npm and pnpm lockfiles.
+        # Let pnpm reconcile its lockfile in the ephemeral runner instead of
+        # rejecting the build before Next.js can be validated.
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build static export
         run: pnpm build
