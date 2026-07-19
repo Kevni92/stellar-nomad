@@ -5,7 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { XROrigin, useXR, useXRInputSourceState } from "@react-three/xr";
 import { useAtomValue, useSetAtom, useStore } from "jotai";
 import { useEffect, useRef } from "react";
-import { Group, Object3D, Quaternion } from "three";
+import { Group, Object3D, Quaternion, Vector3 } from "three";
 
 import { movementAtom, settingsAtom, settingsIsOpenAtom } from "@/store/store";
 import {
@@ -15,10 +15,7 @@ import {
 } from "@/store/vr";
 import VRMenu, { VRButton3D } from "./VRMenu";
 
-const FORWARD_FLIP = new Quaternion().setFromAxisAngle(
-  { x: 0, y: 1, z: 0 } as never,
-  Math.PI,
-);
+const FORWARD_FLIP = new Quaternion().setFromAxisAngle(new Vector3(0, 1, 0), Math.PI);
 const STICK_DEAD_ZONE = 0.14;
 const THROTTLE_RATE = 0.42;
 
@@ -191,8 +188,8 @@ export function VRShipRig() {
   const shipModelRef = useRef<Object3D | null>(null);
 
   useFrame(({ camera, scene }) => {
-    shipRef.current ??= scene.getObjectByName("playerShip");
-    shipModelRef.current ??= scene.getObjectByName("playerShipModel");
+    shipRef.current ??= scene.getObjectByName("playerShip") ?? null;
+    shipModelRef.current ??= scene.getObjectByName("playerShipModel") ?? null;
 
     const ship = shipRef.current;
     if (!ship || !originRef.current || !cockpitRef.current) return;
