@@ -44,7 +44,15 @@ jobs:
         run: pnpm install --no-frozen-lockfile
 
       - name: Build static export
-        run: pnpm build
+        run: pnpm build 2>&1 | tee build.log
+
+      - name: Upload failed build log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-build-log
+          path: build.log
+          retention-days: 1
 
       - name: Rewrite public asset URLs for the repository base path
         run: node scripts/prepare-pages-output.mjs
