@@ -3,12 +3,11 @@
 import { memo, useState } from "react";
 
 import Navigation from "../Navigation/Navigation";
-import { memo } from "react";
 import "./Game.scss";
 import Scene from "../Scene/Scene";
 import HUD from "../HUD/HUD";
 import DevTools from "../DevTools";
-import VRLaunchButton from "../VR/VRLaunchButton";
+import VRExperience from "../VR/VRExperience";
 
 import { AsteroidRuntimeProvider } from "@/sim/asteroids/runtimeContext";
 import { WorldOriginProvider } from "@/sim/worldOrigin";
@@ -20,11 +19,15 @@ const Game = () => {
     <WorldOriginProvider>
       <AsteroidRuntimeProvider>
         <div className="container">
-          <Scene />
-          <HUD />
-          <Navigation />
-          <DevTools />
-          <VRLaunchButton />
+          {!vrActive && (
+            <>
+              <Scene />
+              <HUD />
+              <Navigation />
+              <DevTools />
+            </>
+          )}
+          <VRExperience active={vrActive} onActiveChange={setVrActive} />
         </div>
       </AsteroidRuntimeProvider>
     </WorldOriginProvider>
