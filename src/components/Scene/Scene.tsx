@@ -2,10 +2,8 @@
 "use client";
 
 import { settingsAtom, settingsIsOpenAtom } from "@/store/store";
-import { xrSessionActiveAtom } from "@/store/vr";
 import { Stats, StatsGl, AdaptiveEvents } from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
-import { XR } from "@react-three/xr";
 import { useAtomValue } from "jotai";
 import { memo, type ReactNode, useEffect, useMemo, useState } from "react";
 import * as THREE from "three/webgpu";
@@ -39,8 +37,6 @@ import HullRegenTicker from "../Effects/HullRegenTicker";
 import TransitTicker from "../Transit/TransitTicker";
 import POIProjector from "../POI/POIProjector";
 import WreckCollector from "../WreckCollector";
-import { VRShipRig, XRSessionBridge } from "../VR/VRScene";
-import { xrStore } from "../VR/xrStore";
 
 /**
  * three.js renderer internals we touch directly (not in the public typings).
@@ -76,7 +72,6 @@ function WebGPUGate({ children }: { children: ReactNode }) {
 const Scene = () => {
   const settings = useAtomValue(settingsAtom);
   const settingsIsOpen = useAtomValue(settingsIsOpenAtom);
-  const xrSessionActive = useAtomValue(xrSessionActiveAtom);
   const isSafari =
     typeof window !== "undefined" && navigator
       ? /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
@@ -131,7 +126,7 @@ const Scene = () => {
     <Canvas
       style={{ background: "black" }}
       camera={{ near: 0.01, far: 20_000 }}
-      frameloop={settingsIsOpen && !xrSessionActive ? "never" : "always"}
+      frameloop={settingsIsOpen ? "never" : "always"}
       dpr={[0.5, 1.5]}
       gl={(defaultProps) => {
         const renderer = new THREE.WebGPURenderer({
@@ -139,9 +134,6 @@ const Scene = () => {
           powerPreference: "high-performance",
           logarithmicDepthBuffer: true,
         });
-
-        renderer.xr.enabled = true;
-        renderer.xr.setReferenceSpaceType("local-floor");
 
         const origRender = renderer.render.bind(renderer);
         renderer.render = function (
@@ -166,17 +158,13 @@ const Scene = () => {
         return renderer;
       }}
     >
-      <XR store={xrStore}>
-        <XRSessionBridge />
-        {settings.fps ? (isSafari ? <Stats /> : <StatsGl />) : null}
+      {settings.fps ? (isSafari ? <Stats /> : <StatsGl />) : null}
 
-        <WebGPUGate>
-          <SpaceRenderer scaled={scaledContent} local={localContent} />
-          <VRShipRig />
-        </WebGPUGate>
+      <WebGPUGate>
+        <SpaceRenderer scaled={scaledContent} local={localContent} />
+      </WebGPUGate>
 
-        <AdaptiveEvents />
-      </XR>
+      <AdaptiveEvents />
     </Canvas>
   );
 };
