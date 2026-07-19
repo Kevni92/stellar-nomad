@@ -10,5 +10,4 @@ export const xrStore = createXRStore({
   frameRate: "high",
   foveation: 0.8,
   frameBufferScaling: 0.8,
-  originReferenceSpace: "local-floor",
 });
