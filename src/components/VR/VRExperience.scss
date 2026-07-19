@@ -6,7 +6,6 @@
 
   &--active {
     .vr-experience__canvas {
-      visibility: visible;
       opacity: 1;
     }
   }
@@ -16,7 +15,6 @@
     inset: 0;
     width: 100% !important;
     height: 100% !important;
-    visibility: hidden;
     opacity: 0;
   }
 
