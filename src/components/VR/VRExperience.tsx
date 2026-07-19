@@ -105,7 +105,7 @@ export default function VRExperience({ active, onActiveChange }: VRExperiencePro
       <Canvas
         className="vr-experience__canvas"
         dpr={1}
-        camera={{ position: [0, 1.6, 0], near: 0.05, far: 2000 }}
+        camera={{ position: [0, 0, 0], near: 0.05, far: 2000 }}
         gl={{ antialias: false, alpha: false, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
           const renderer = gl as WebGLRenderer;
@@ -113,9 +113,11 @@ export default function VRExperience({ active, onActiveChange }: VRExperiencePro
           rendererRef.current = renderer;
         }}
       >
-        <Suspense fallback={null}>
-          <VRWorld exitVR={exitVR} />
-        </Suspense>
+        {active ? (
+          <Suspense fallback={null}>
+            <VRWorld exitVR={exitVR} />
+          </Suspense>
+        ) : null}
       </Canvas>
 
       {!active && supported ? (
