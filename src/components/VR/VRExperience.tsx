@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import type { WebGLRenderer } from "three";
 
+import ResearchTicker from "../Research/ResearchTicker";
 import VRWorld from "./VRWorld";
 import "./VRExperience.scss";
 
@@ -116,6 +117,7 @@ export default function VRExperience({ active, onActiveChange }: VRExperiencePro
         {active ? (
           <Suspense fallback={null}>
             <VRWorld exitVR={exitVR} />
+            <ResearchTicker />
           </Suspense>
         ) : null}
       </Canvas>
